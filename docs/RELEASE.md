@@ -1,4 +1,6 @@
-# V0.1.2 首次预览发布准备
+# V0.1.2 首次预览发布
+
+2026-11-03（Asia/Shanghai），[v0.1.2 预览版](https://github.com/Xiaoyu9021/agent-bridge/releases/tag/v0.1.2) 已公开发布。主分支与标签的六组 CI 测试通过，两个 ZIP 与两个校验文件均已上传，并完成实际下载复核。发布提交为 4424bcf03c541861675f33e7ff9639b302e927ca；后续文档证据更新不移动版本标签。
 
 ## 交付物
 
@@ -35,7 +37,7 @@ git diff --cached --check
 
 仓库为 https://github.com/Xiaoyu9021/agent-bridge 。main 分支 CI 成功后，推送与 pyproject.toml 版本一致的 v0.1.2 标签。标签 CI 重新验证六组测试，生成技能包，核对 SHA256SUMS.txt 后使用 GitHub 托管运行器的 gh 发布预览版。只有 release 任务使用 contents: write；不需要用户另行提供个人访问令牌。发布正文来自 RELEASE_NOTES.md。
 
-## 发布说明草稿
+## 发布说明
 
 Agent Bridge 的首次 skill 预览版，让两个不同账号的 Codex 在可信局域网内交接执行报告、代码 ZIP 和截图。无需桌面程序、Qt 或额外模型 API Key。支持显式配对、哈希校验、固定 ID 重试和送达/收取/已读区分。
 

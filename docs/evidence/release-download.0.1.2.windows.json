@@ -1,0 +1,23 @@
+{
+  "version": "0.1.2",
+  "date_local": "2026-11-03",
+  "release_url": "https://github.com/Xiaoyu9021/agent-bridge/releases/tag/v0.1.2",
+  "downloaded_four_assets": true,
+  "checksums_agree": true,
+  "packages": {
+    "agent-bridge-skill.zip": {
+      "size_bytes": 45196,
+      "sha256": "1d854dd239030bf3dca9a0cfb2181d134511a7fca7ed5fd4e8f307c594748c9d",
+      "zip_crc_passed": true,
+      "manifest_files_verified": 28,
+      "matches_local_package": true
+    },
+    "agent-bridge-mac-skill.zip": {
+      "size_bytes": 46705,
+      "sha256": "d38510fac6b4c0503698b945b16e61ddbd425a9273ab4fa24fd61ae7796f3826",
+      "zip_crc_passed": true,
+      "manifest_files_verified": 28,
+      "matches_local_package": true
+    }
+  }
+}

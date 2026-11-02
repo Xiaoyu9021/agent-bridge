@@ -21,6 +21,14 @@
 
 首次推送 [Tests #1](https://github.com/Xiaoyu9021/agent-bridge/actions/runs/41483596503) 的两个 Windows 任务通过；Linux 在技能包同步检查失败。原因是 pathlib 的默认路径排序在 Windows 和 POSIX 上对大小写的处理不同，使生成清单的 JSON 键顺序不一致。已改为按标准化 POSIX 路径字符串排序，新增 PureWindowsPath/PurePosixPath 清单一致性测试；修复后的本地 Windows 回归 **69 passed**，Ruff 与清单检查通过。修复后线上结果单独记录，不以本地回归代替。见 `evidence/manifest-order-fix.windows.json`。
 
+### 修复后线上六组矩阵通过（2026-11-03）
+
+[Tests #2](https://github.com/Xiaoyu9021/agent-bridge/actions/runs/41484076768) 对提交 `4424bcf03c541861675f33e7ff9639b302e927ca` 运行 Windows/macOS/Linux × Python 3.11/3.13，六组均为 **69 passed**，无失败、无跳过，每组有一条上游弃用警告。Ruff、技能同步检查和 Git 内容发布检查也通过，skill-package 任务成功。另从公开 GitHub 仓库重新克隆，清单校验、独立临时目录安装通过，重新生成的两个 ZIP 哈希与本地一致。未覆盖真实用户安装或替换运行中的两端技能。见 `evidence/github-ci.0.1.2.json`。
+
+### 首个公开预览版与下载复核（2026-11-03）
+
+[v0.1.2](https://github.com/Xiaoyu9021/agent-bridge/releases/tag/v0.1.2) 已作为预览版发布。标签 [Tests #3](https://github.com/Xiaoyu9021/agent-bridge/actions/runs/41484621315) 再次完成六组测试与打包。已从公开下载地址实际获取两个 ZIP、SHA256SUMS.txt 与 skill-checksums.json；两个 ZIP 的字节数、SHA-256、CRC 和各 28 份清单文件逐一通过，内容与本地源码包一致。未安装或执行下载包中的代码，也未替换正在运行的两端技能。证据见 `evidence/release-download.0.1.2.windows.json`。
+
 ### 真实局域网双向交接（2026-11-02）
 
 - Mac → Windows：交付 `0e68cac2-639f-424d-a12e-304f0d9759ec`，3 个文件共 585 B。Windows 实际读取 UTF-8 报告，ZIP 可打开且 CRC 通过，PNG 实际显示为 32×32 蓝色图，三文件大小和 SHA-256 均与清单一致。收取及已读时间均已记录。
@@ -104,7 +112,7 @@ Mac 返回的是 **V0.1.0 基线** 的 42 项测试、512 MiB 回环传输、Key
 - V0.1.1 新连接界面的 macOS 复核、两个原生 GUI 完整人工闭环；Intel Mac。Apple Silicon 的 V0.1.0 启动、Keychain 与 `.app` 已有回传证据。
 - 真实 LAN 大文件和断网恢复、Tailscale、其他网络/防火墙配置；基本双向三附件与已读流程已完成。
 - 签名、notarization、全新无 Python 的 Windows 机器。
-- GitHub Actions 在线运行、公开仓库、Release 发布和第三方分发许可最终核查。
+- 当前源码 ZIP 不捆绑第三方依赖，桌面二进制的第三方分发许可最终核查不在本次范围内。
 
 ## 复现命令
 
@@ -116,4 +124,4 @@ Mac 返回的是 **V0.1.0 基线** 的 42 项测试、512 MiB 回环传输、Key
 .\scripts\build_windows.ps1
 ```
 
-Mac 验证命令和真实跨机步骤见 USER_GUIDE_MACOS.md。CI 文件已配置，但未经运行的矩阵不能标为通过。
+Mac 验证命令和真实跨机步骤见 USER_GUIDE_MACOS.md。当前 skill 的六组线上矩阵结果见上文；历史桌面原型不以 skill 的真实使用结果替代其 GUI 验收。

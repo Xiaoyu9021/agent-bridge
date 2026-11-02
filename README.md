@@ -1,5 +1,7 @@
 # Agent Bridge
 
+[![Tests](https://github.com/Xiaoyu9021/agent-bridge/actions/workflows/ci.yml/badge.svg)](https://github.com/Xiaoyu9021/agent-bridge/actions/workflows/ci.yml)
+
 **在 Codex 对话中，把执行报告和项目交付包直接发给另一台电脑。**
 
 一个可安装的开源 skill，最初为 SpaceWatch 的开发流程而做：Windows Codex 协调 Android、后端和下一轮需求，另一个账号的 Mac Codex 复刻 iOS。完成一轮后，在 Mac 对话中发送报告、代码 ZIP 和截图，Windows Codex 收取并阅读，省去“Mac → 手机 → Windows”的中转。
@@ -71,7 +73,7 @@ python scripts/verify_skill.py
 
 运行时源码以 `src/codex_bridge/` 为准，`scripts/build_skill.py` 将必要核心同步到 skill/runtime，保证只下载技能文件夹也可安装。不要手改生成的 runtime。构建不打包 .runtime 虚拟环境、用户任务或凭据。
 
-测试证据、平台范围和当前限制见 [测试报告](docs/TEST_REPORT.md) 与 [真实双机回执](docs/evidence/real-lan.0.1.2.json)。新 skill 已完成基本真实双向交接，真实 SpaceWatch 交付由用户确认试运行通过；大文件 LAN 和真实断网恢复待验证。CI 矩阵已配置，但在线结果以实际运行记录为准。
+测试证据、平台范围和当前限制见 [测试报告](docs/TEST_REPORT.md) 与 [真实双机回执](docs/evidence/real-lan.0.1.2.json)。新 skill 已完成基本真实双向交接，真实 SpaceWatch 交付由用户确认试运行通过；大文件 LAN 和真实断网恢复待验证。[线上 CI #2](https://github.com/Xiaoyu9021/agent-bridge/actions/runs/41484076768) 已通过 Windows/macOS/Linux × Python 3.11/3.13 六组检查，每组 69 项测试通过。
 
 发布包使用明确的文件清单，排除本地运行环境和任务数据，固定 ZIP 元数据便于复现。SHA256SUMS.txt 与 skill-checksums.json 随包生成。CI 在六组测试通过后才生成技能包；发布步骤和已知限制见 [发布说明](docs/RELEASE.md)。
 

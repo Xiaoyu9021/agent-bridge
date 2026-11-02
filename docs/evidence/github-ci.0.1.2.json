@@ -1,0 +1,161 @@
+{
+  "version": "0.1.2",
+  "date_local": "2026-11-03",
+  "timezone": "Asia/Shanghai",
+  "repository": "Xiaoyu9021/agent-bridge",
+  "commit": "4424bcf03c541861675f33e7ff9639b302e927ca",
+  "main_ci": {
+    "run_id": 41484076768,
+    "url": "https://github.com/Xiaoyu9021/agent-bridge/actions/runs/41484076768",
+    "conclusion": "success",
+    "jobs": [
+      {
+        "id": 125409655620,
+        "name": "test (windows-latest, 3.11)",
+        "conclusion": "success",
+        "tests": 69,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "id": 125409655990,
+        "name": "test (macos-latest, 3.13)",
+        "conclusion": "success",
+        "tests": 69,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "id": 125409655996,
+        "name": "test (windows-latest, 3.13)",
+        "conclusion": "success",
+        "tests": 69,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "id": 125409656006,
+        "name": "test (ubuntu-latest, 3.11)",
+        "conclusion": "success",
+        "tests": 69,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "id": 125409656123,
+        "name": "test (macos-latest, 3.11)",
+        "conclusion": "success",
+        "tests": 69,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "id": 125409656357,
+        "name": "test (ubuntu-latest, 3.13)",
+        "conclusion": "success",
+        "tests": 69,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "id": 125410915841,
+        "name": "skill-package",
+        "conclusion": "success"
+      },
+      {
+        "id": 125411257202,
+        "name": "release",
+        "conclusion": "skipped"
+      }
+    ]
+  },
+  "fresh_github_checkout": {
+    "manifest_verified": true,
+    "temporary_install_verified": true,
+    "package_hashes_match_local": true,
+    "account_profile_replaced": false
+  },
+  "scope": "Hosted CI regression and package generation; does not replace real LAN or system-keychain validation.",
+  "tag_ci": {
+    "run_id": 41484621315,
+    "url": "https://github.com/Xiaoyu9021/agent-bridge/actions/runs/41484621315",
+    "conclusion": "success",
+    "jobs": [
+      {
+        "id": 125411541610,
+        "name": "test (macos-latest, 3.11)",
+        "conclusion": "success"
+      },
+      {
+        "id": 125411541726,
+        "name": "test (ubuntu-latest, 3.13)",
+        "conclusion": "success"
+      },
+      {
+        "id": 125411541796,
+        "name": "test (ubuntu-latest, 3.11)",
+        "conclusion": "success"
+      },
+      {
+        "id": 125411541922,
+        "name": "test (windows-latest, 3.13)",
+        "conclusion": "success"
+      },
+      {
+        "id": 125411541945,
+        "name": "test (windows-latest, 3.11)",
+        "conclusion": "success"
+      },
+      {
+        "id": 125411541973,
+        "name": "test (macos-latest, 3.13)",
+        "conclusion": "success"
+      },
+      {
+        "id": 125418647189,
+        "name": "skill-package",
+        "conclusion": "success"
+      },
+      {
+        "id": 125418862913,
+        "name": "release",
+        "conclusion": "success"
+      }
+    ]
+  },
+  "release": {
+    "url": "https://github.com/Xiaoyu9021/agent-bridge/releases/tag/v0.1.2",
+    "tag": "v0.1.2",
+    "prerelease": true,
+    "draft": false,
+    "published_at_utc": "2026-11-02T16:59:06Z",
+    "assets": [
+      {
+        "name": "agent-bridge-mac-skill.zip",
+        "size_bytes": 46705,
+        "digest": "sha256:d38510fac6b4c0503698b945b16e61ddbd425a9273ab4fa24fd61ae7796f3826"
+      },
+      {
+        "name": "agent-bridge-skill.zip",
+        "size_bytes": 45196,
+        "digest": "sha256:1d854dd239030bf3dca9a0cfb2181d134511a7fca7ed5fd4e8f307c594748c9d"
+      },
+      {
+        "name": "SHA256SUMS.txt",
+        "size_bytes": 182,
+        "digest": "sha256:a4c37b5d8881b506789b231b4f71658c748aa93082fc12e3968bf8233b6e6ca8"
+      },
+      {
+        "name": "skill-checksums.json",
+        "size_bytes": 289,
+        "digest": "sha256:2a34f3022ae16787c752ab84f10e64395816870d7095a7ebc920a9a6163e2d1d"
+      }
+    ]
+  }
+}
