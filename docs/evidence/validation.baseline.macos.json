@@ -1,0 +1,7 @@
+{
+  "pytest_passed": 42,
+  "pip_check": true,
+  "ruff": true,
+  "native_full_roundtrip": "not_completed",
+  "cross_machine": "not_run"
+}

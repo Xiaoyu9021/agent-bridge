@@ -1,0 +1,17 @@
+{
+  "platform": "Windows-11-10.0.26200-SP0",
+  "python": "3.13.2",
+  "file_bytes": 536870912,
+  "sha256": "d00b2622d909ee9c0f2536b760556e737254709d8153543e456eb6808b2e5164",
+  "separate_host_process": true,
+  "independent_http_clients": 2,
+  "transport": "HTTP over 127.0.0.1 (not physical LAN)",
+  "sha256_verified": true,
+  "upload_seconds": 4.026,
+  "download_seconds": 2.028,
+  "host_rss_growth_mib": 3.44,
+  "client_gui_rss_growth_mib": 4.96,
+  "qt_heartbeat_ticks": 114,
+  "qt_max_heartbeat_gap_seconds": 0.071,
+  "measured_at_utc": "2026-11-02T05:19:29.504101+00:00"
+}

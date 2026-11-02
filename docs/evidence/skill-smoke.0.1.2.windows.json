@@ -1,0 +1,17 @@
+{
+  "version": "0.1.2",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "python": "3.13.2",
+  "isolated_skill_runtime": true,
+  "qt_required": false,
+  "independent_receiver_processes": 2,
+  "independent_cli_invocations": true,
+  "system_vault": true,
+  "files": 3,
+  "chinese_filenames": true,
+  "sha256_verified": true,
+  "idempotent_retry": true,
+  "received_and_read_distinguished": true,
+  "restart_recovery": true,
+  "transport": "127.0.0.1 on Windows; simulated Mac, not physical cross-device LAN"
+}

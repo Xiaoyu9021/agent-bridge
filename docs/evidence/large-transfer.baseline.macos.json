@@ -1,0 +1,17 @@
+{
+  "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+  "python": "3.13.18",
+  "file_bytes": 536870912,
+  "sha256": "decd6a4c45e2eee2a2e8b6279f73f837b4b7e384431fc0259548ee2bb4aad8b5",
+  "separate_host_process": true,
+  "independent_http_clients": 2,
+  "transport": "HTTP over 127.0.0.1 (not physical LAN)",
+  "sha256_verified": true,
+  "upload_seconds": 0.913,
+  "download_seconds": 0.925,
+  "host_rss_growth_mib": 2.62,
+  "client_gui_rss_growth_mib": 5.83,
+  "qt_heartbeat_ticks": 41,
+  "qt_max_heartbeat_gap_seconds": 0.056,
+  "measured_at_utc": "2026-11-02T08:52:24.614867+00:00"
+}

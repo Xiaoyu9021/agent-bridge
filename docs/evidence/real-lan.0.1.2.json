@@ -1,0 +1,73 @@
+{
+  "version": "0.1.2",
+  "date_local": "2026-11-02",
+  "network": "Two physical Windows/macOS hosts on the same private LAN",
+  "test_scope": "Synthetic SpaceWatch-Test fixtures only; not production SpaceWatch code acceptance",
+  "mac_to_windows": {
+    "delivery_id": "0e68cac2-639f-424d-a12e-304f0d9759ec",
+    "project": "SpaceWatch-Test",
+    "title": "首次跨机交接测试",
+    "files": [
+      {
+        "filename": "测试报告.md",
+        "size_bytes": 316,
+        "sha256": "2615711c64cd2eb7c015fa0490da5d45b67a4f2aae22a7cfe23cd40d66b87882",
+        "matched": true
+      },
+      {
+        "filename": "测试附件.zip",
+        "size_bytes": 170,
+        "sha256": "7025a889219bc61fff26cf1725141cfc7df03393a6e8c686ab6462d0e00ca1cf",
+        "matched": true
+      },
+      {
+        "filename": "测试图片.png",
+        "size_bytes": 99,
+        "sha256": "93084f87902f836108733fd3d700f5565f4f78069f7f500b402a1e6a74f40910",
+        "matched": true
+      }
+    ],
+    "zip": {
+      "opened": true,
+      "crc_passed": true,
+      "entries": [
+        {
+          "name": "synthetic-test.txt",
+          "size_bytes": 34
+        }
+      ]
+    },
+    "png": {
+      "decoded": true,
+      "width": 32,
+      "height": 32,
+      "format": "Format_RGB32"
+    },
+    "report_utf8_read": true,
+    "direction": "mac_to_windows",
+    "received_at": "2026-11-02T13:52:48.524353+00:00",
+    "read_at": "2026-11-02T13:54:06.809246+00:00",
+    "verification_source": "Windows independently read UTF-8 report, opened ZIP and checked CRC, displayed PNG, recomputed all SHA-256 values"
+  },
+  "windows_to_mac": {
+    "delivery_id": "0287c71b-e4d9-4bfb-bea4-640e91326732",
+    "project": "SpaceWatch-Test",
+    "title": "Windows→Mac反向交接测试",
+    "peer": "mac",
+    "status": "delivered_to_receiver",
+    "files": 3,
+    "size_bytes": 1177,
+    "error": null,
+    "received_at": "2026-11-02T14:04:57.365091+00:00",
+    "read_at": "2026-11-02T14:05:17.229036+00:00",
+    "direction": "windows_to_mac",
+    "verification_source": "Mac verification passed as reported by user; Windows independently fetched authenticated received_at/read_at receipt"
+  },
+  "bidirectional_delivery_and_read_confirmed": true,
+  "not_tested": [
+    "physical LAN 512 MiB transfer",
+    "physical LAN disconnect recovery",
+    "production SpaceWatch handoff",
+    "Tailscale"
+  ]
+}

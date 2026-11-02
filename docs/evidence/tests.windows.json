@@ -1,0 +1,11 @@
+{
+  "tests": "42",
+  "failures": "0",
+  "errors": "0",
+  "skipped": "0",
+  "time": "6.514",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "python": "3.13.2",
+  "command": "python -m pytest -q --junitxml=artifacts/tests.xml",
+  "measured_at_utc": "2026-11-02T05:32:59.065229+00:00"
+}

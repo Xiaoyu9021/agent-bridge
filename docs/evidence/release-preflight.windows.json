@@ -1,0 +1,15 @@
+{
+  "tests": "68",
+  "failures": "0",
+  "errors": "0",
+  "skipped": "0",
+  "time": "36.858",
+  "version": "0.1.2",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "python": "3.13.2",
+  "date_local": "2026-11-03",
+  "timezone": "Asia/Shanghai",
+  "command": "python -m pytest -q --junitxml=artifacts/tests.xml",
+  "scope": "Local Windows regression; online CI has not run",
+  "warning": "One upstream Starlette/httpx deprecation warning"
+}

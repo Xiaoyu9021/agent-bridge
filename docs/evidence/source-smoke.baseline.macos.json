@@ -1,0 +1,8 @@
+{
+  "passed": true,
+  "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+  "python": "3.13.18",
+  "gui_created": true,
+  "system_font_families": 266,
+  "pairing_and_task_http": true
+}

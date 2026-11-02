@@ -1,0 +1,11 @@
+{
+  "passed": true,
+  "version": "0.1.1",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "python": "3.13.2",
+  "gui_created": true,
+  "system_font_families": 451,
+  "pairing_and_task_http": true,
+  "simple_setup_and_invitation": true,
+  "private_adapter_candidates": 1
+}

@@ -1,0 +1,4 @@
+{
+  "backend": "keyring.backends.macOS",
+  "write_read_delete": true
+}

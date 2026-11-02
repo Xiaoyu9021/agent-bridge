@@ -1,0 +1,15 @@
+{
+  "schema_version": "0.1",
+  "id": "00000000-0000-4000-8000-000000000001",
+  "title": "iOS 个人中心复刻示例",
+  "description_md": "请读取 sample_task.md 中的演示需求。此清单仅用于说明格式。",
+  "sender_device_id": "00000000-0000-4000-8000-000000000002",
+  "recipient_device_id": "00000000-0000-4000-8000-000000000003",
+  "source_agent": "codex",
+  "target_agent": "codex",
+  "status": "pending",
+  "attachments": [],
+  "results": [],
+  "events": [],
+  "export_files": []
+}

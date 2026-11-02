@@ -1,0 +1,4 @@
+interface:
+  display_name: "Agent Bridge"
+  short_description: "在 Codex 对话中通过局域网交接任务、执行报告、代码包与截图"
+  default_prompt: "使用 $agent-bridge 将本轮 SpaceWatch 执行报告和交付文件发送给另一台电脑。"
