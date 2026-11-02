@@ -41,7 +41,7 @@ def package_files():
 
 def manifest_bytes(files):
     manifest = {path.as_posix(): hashlib.sha256(content).hexdigest()
-                for path, content in sorted(files.items())}
+                for path, content in sorted(files.items(), key=lambda item: item[0].as_posix())}
     return (json.dumps(manifest, indent=2) + "\n").encode()
 
 

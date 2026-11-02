@@ -1,7 +1,7 @@
 import importlib.util
 import json
 import zipfile
-from pathlib import Path
+from pathlib import Path, PurePosixPath, PureWindowsPath
 
 import pytest
 
@@ -41,6 +41,14 @@ def test_check_detects_stale_manifest_even_when_runtime_matches(tmp_path, monkey
     (skill / "runtime-manifest.json").write_text("{}", encoding="utf-8")
     with pytest.raises(ValueError, match="runtime-manifest"):
         builder.build(tmp_path / "dist", check=True)
+
+
+def test_manifest_order_is_identical_for_windows_and_posix_paths():
+    builder = load_script("build_skill")
+    files = {"SKILL.md": b"skill", "agents/openai.yaml": b"metadata", "LICENSE": b"license"}
+    windows = {PureWindowsPath(name): content for name, content in files.items()}
+    posix = {PurePosixPath(name): content for name, content in files.items()}
+    assert builder.manifest_bytes(windows) == builder.manifest_bytes(posix)
 
 
 def test_publish_check_rejects_runtime_data_secrets_and_changed_staged_blob():

@@ -17,6 +17,10 @@
 
 原始脱敏证据见 `evidence/skill-smoke.0.1.2.windows.json` 和本轮测试 JSON。主要实现代码为 `src/codex_bridge/agent/`；生成 runtime 不手动维护。
 
+### 首轮线上 CI 与清单排序修复（2026-11-03）
+
+首次推送 [Tests #1](https://github.com/Xiaoyu9021/agent-bridge/actions/runs/41483596503) 的两个 Windows 任务通过；Linux 在技能包同步检查失败。原因是 pathlib 的默认路径排序在 Windows 和 POSIX 上对大小写的处理不同，使生成清单的 JSON 键顺序不一致。已改为按标准化 POSIX 路径字符串排序，新增 PureWindowsPath/PurePosixPath 清单一致性测试；修复后的本地 Windows 回归 **69 passed**，Ruff 与清单检查通过。修复后线上结果单独记录，不以本地回归代替。见 `evidence/manifest-order-fix.windows.json`。
+
 ### 真实局域网双向交接（2026-11-02）
 
 - Mac → Windows：交付 `0e68cac2-639f-424d-a12e-304f0d9759ec`，3 个文件共 585 B。Windows 实际读取 UTF-8 报告，ZIP 可打开且 CRC 通过，PNG 实际显示为 32×32 蓝色图，三文件大小和 SHA-256 均与清单一致。收取及已读时间均已记录。

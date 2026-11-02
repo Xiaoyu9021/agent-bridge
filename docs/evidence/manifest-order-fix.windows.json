@@ -1,0 +1,14 @@
+{
+  "tests": "69",
+  "failures": "0",
+  "errors": "0",
+  "skipped": "0",
+  "time": "36.569",
+  "version": "0.1.2",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "python": "3.13.2",
+  "date_local": "2026-11-03",
+  "command": "python -m pytest -q --junitxml=artifacts/tests.xml",
+  "change": "Normalize manifest ordering across Windows and POSIX paths",
+  "online_result_claimed": false
+}
