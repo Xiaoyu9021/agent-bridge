@@ -52,3 +52,38 @@ jobs:
             artifacts/agent-bridge-mac-skill.zip
             artifacts/skill-checksums.json
             artifacts/SHA256SUMS.txt
+  release:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: skill-package
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: agent-bridge-skill
+          path: artifacts
+      - name: Check release version and package hashes
+        env:
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: |
+          python - <<'PY'
+          import os, pathlib, tomllib
+          version = tomllib.loads(pathlib.Path('pyproject.toml').read_text())['project']['version']
+          assert os.environ['RELEASE_TAG'] == 'v' + version, 'Tag does not match package version'
+          PY
+          cd artifacts
+          sha256sum --check SHA256SUMS.txt
+      - name: Publish preview release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: |
+          gh release create "$RELEASE_TAG" \
+            artifacts/agent-bridge-skill.zip \
+            artifacts/agent-bridge-mac-skill.zip \
+            artifacts/skill-checksums.json artifacts/SHA256SUMS.txt \
+            --verify-tag --prerelease \
+            --title "Agent Bridge $RELEASE_TAG preview" \
+            --notes-file docs/RELEASE_NOTES.md

@@ -4,7 +4,7 @@
 
 一个可安装的开源 skill，最初为 SpaceWatch 的开发流程而做：Windows Codex 协调 Android、后端和下一轮需求，另一个账号的 Mac Codex 复刻 iOS。完成一轮后，在 Mac 对话中发送报告、代码 ZIP 和截图，Windows Codex 收取并阅读，省去“Mac → 手机 → Windows”的中转。
 
-**当前交付：`skills/agent-bridge/`。** 无需桌面程序或 Qt，不使用任何模型 API Key，不读取或共享 Codex 登录材料。仓库工作名仍待公开发布前核查；目前尚未创建线上 GitHub 仓库或 Release。
+**当前交付：`skills/agent-bridge/`。** 无需桌面程序或 Qt，不使用任何模型 API Key，不读取或共享 Codex 登录材料。公开仓库为 [Xiaoyu9021/agent-bridge](https://github.com/Xiaoyu9021/agent-bridge)，预览版与安装包见 [Releases](https://github.com/Xiaoyu9021/agent-bridge/releases)。
 
 Windows 当前 **68 项测试通过**，并通过无 Qt 独立环境、两个后台进程和系统凭据库的端到端测试。Mac skill 已安装运行；真实 Windows ↔ Mac 局域网双向三附件交付、报告阅读和已读回执已完成，使用合成联调资料。
 
@@ -12,9 +12,9 @@ Windows 当前 **68 项测试通过**，并通过无 Qt 独立环境、两个后
 
 ## 如何使用
 
-发布后，将本仓库或 `skills/agent-bridge` 的 GitHub 链接交给 Codex，并说：
+将本仓库或 [skills/agent-bridge](https://github.com/Xiaoyu9021/agent-bridge/tree/main/skills/agent-bridge) 的 GitHub 链接交给 Codex，并说：
 
-> 请从本仓库的 skills/agent-bridge 安装 Agent Bridge skill，并配置本机作为 SpaceWatch 的交接端。
+> 请从 https://github.com/Xiaoyu9021/agent-bridge 的 skills/agent-bridge 安装 Agent Bridge skill，并配置本机作为文件交接端。
 
 当前也可以把 `artifacts/agent-bridge-skill.zip` 交给另一端 Codex：解压后读取 SKILL.md，执行随附的 scripts/install.py、bootstrap.py，再 setup。两端分别安装一次，Agent 自己完成依赖和后台进程配置。
 
