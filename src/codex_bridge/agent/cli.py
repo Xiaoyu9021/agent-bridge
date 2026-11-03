@@ -12,6 +12,34 @@ from codex_bridge.agent.local import profile_home
 from codex_bridge.models import new_id, validate_id
 
 
+def failure(command, error, delivery_id=None):
+    detail = safe_error(error)
+    code = detail["code"]
+    result = {"ok": False, "error": detail}
+    if delivery_id is not None:
+        result["delivery_id"] = delivery_id
+    if code in {"not_running", "stale_state"}:
+        result["action"] = "在当前配置运行 start。首次使用可以运行 setup。"
+    elif code == "credential_store_unavailable":
+        result["action"] = "启用或解锁本机系统凭据库，再重试当前命令。"
+    elif code == "not_paired":
+        result["action"] = "先查询 peers。正在等待批准时请接收端核对申请。没有配对时请接收端生成邀请。"
+    elif code in {"offline", "timeout", "disconnected"}:
+        if command in {"send", "retry", "delivery-status", "join"}:
+            action = (
+                "请接收端运行 status，若进程停止则运行 start。确认两端联网。"
+                "若接收地址已变更，请在接收端 stop 后 start，再用新邀请重新配对。"
+            )
+            if command in {"send", "retry"}:
+                action += " 先用 outbox 核对原交付 ID，恢复连接后查询 delivery-status，必要时用原 ID retry。"
+            result["action"] = action
+        else:
+            result["action"] = "请用 status 检查当前端点，再重试当前命令。"
+    elif code == "not_found" and command in {"retry", "delivery-status"}:
+        result["action"] = "先用 outbox 核对原交付 ID。若记录存在且尚未确认送达，可用原 ID retry。"
+    return result
+
+
 def parser():
     result = argparse.ArgumentParser(description="Agent Bridge：在 Agent 对话中交接任务和文件")
     result.add_argument("--version", action="version", version=__version__)
@@ -84,10 +112,13 @@ def run(args):
         try:
             return control_request(root, "POST", "/send", json=body)
         except Exception as error:
-            return {"ok": False, "delivery_id": delivery_id, "error": safe_error(error),
-                    "action": "查询 outbox；若已有此 ID 的记录，用 retry <交付ID> 重试"}
+            return failure(command, error, delivery_id)
     if command == "retry":
-        return control_request(root, "POST", "/retry/" + validate_id(args.delivery_id))
+        delivery_id = validate_id(args.delivery_id)
+        try:
+            return control_request(root, "POST", "/retry/" + delivery_id)
+        except Exception as error:
+            return failure(command, error, delivery_id)
     if command == "inbox":
         return control_request(root, "GET", "/inbox", params={"project": args.project})
     if command == "receive":
@@ -108,7 +139,7 @@ def main(argv=None):
     try:
         result = run(args)
     except Exception as error:
-        result = {"ok": False, "error": safe_error(error)}
+        result = failure(args.command, error)
     print(json.dumps(result, ensure_ascii=False, indent=2))
     if isinstance(result, dict) and result.get("ok") is False:
         raise SystemExit(1)

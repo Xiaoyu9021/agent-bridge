@@ -18,7 +18,7 @@ Windows 当前 **69 项测试通过**，并通过无 Qt 独立环境、两个后
 
 > 请从 https://github.com/Xiaoyu9021/agent-bridge 的 skills/agent-bridge 安装 Agent Bridge skill，并配置本机作为文件交接端。
 
-当前也可以把 `artifacts/agent-bridge-skill.zip` 交给另一端 Codex：解压后读取 SKILL.md，执行随附的 scripts/install.py、bootstrap.py，再 setup。两端分别安装一次，Agent 自己完成依赖和后台进程配置。
+Codex 会按链接下载技能，读取 SKILL.md，校验并安装到本机，再配置独立 Python 环境和后台接收进程。离线安装也可以把发布的技能 ZIP 发给另一端 Codex，使用同样的安装流程。两端各安装一次。
 
 首次配对：Windows Codex 生成连接信息 → 交给 Mac Codex → Windows 核对 Mac 名称并确认。通常不需要用户填写 IP、端口或目录。系统凭据库必须可用，端口需在可信局域网可达；软件不自动修改防火墙。
 

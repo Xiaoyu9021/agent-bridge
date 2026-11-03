@@ -32,9 +32,9 @@ def safe_error(error: Exception) -> dict:
     if isinstance(error, BridgeError):
         return {"code": error.code, "message": error.message}
     if isinstance(error, httpx.TimeoutException):
-        return {"code": "timeout", "message": "连接超时，交付状态未确认；请用原交付 ID 重试"}
+        return {"code": "timeout", "message": "连接超时，操作结果待确认"}
     if isinstance(error, httpx.RequestError):
-        return {"code": "offline", "message": "无法连接另一台电脑，请确认网络和接收进程后用原 ID 重试"}
+        return {"code": "offline", "message": "网络连接失败或传输中断，操作结果待确认"}
     if isinstance(error, OSError):
         return {"code": "file_error", "message": "文件操作失败，请检查文件是否存在、目录权限和磁盘空间"}
     if isinstance(error, ValueError):
@@ -319,10 +319,11 @@ class Node:
             if not authorization.startswith("Bearer "):
                 raise BridgeError("unauthorized", "需要设备授权", 401)
             actor = self.runtime.control.store.authenticate(authorization[7:])
-            self.runtime.control.store.get_task(actor["id"], delivery_id)
+            task = self.runtime.control.store.get_task(actor["id"], delivery_id)
             validate_id(delivery_id)
             result = read_json(self.root / "receipts" / f"{delivery_id}.json", {})
-            return {"delivery_id": delivery_id, "received_at": result.get("received_at"),
+            receiver_status = "draft" if task["status"] == "draft" else "delivered_to_receiver"
+            return {"delivery_id": delivery_id, "receiver_status": receiver_status, "received_at": result.get("received_at"),
                     "read_at": result.get("read_at")}
 
     def create_admin(self):

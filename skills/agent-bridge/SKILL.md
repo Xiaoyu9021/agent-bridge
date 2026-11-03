@@ -11,7 +11,7 @@ description: 在 Codex 对话中，通过可信局域网向另一台电脑的 Co
 
 本技能目录就是包含本 SKILL.md 的目录。先查看 scripts/bridge.py 和 scripts/bootstrap.py；以 Python 3.11+ 运行 bootstrap，建立技能自己的 .runtime 环境。若缺少合适 Python，查找已安装版本或说明需要用户级 Python，不改系统 Python。
 
-如果用户提供的是本地 ZIP，解压后先查看并运行 scripts/install.py，它会校验包并安装到本机 Codex 技能目录；默认不覆盖不同版本，升级须审阅后显式 --upgrade，且会拒绝覆盖用户修改。使用返回的安装目录运行后续命令。已经通过 Codex 安装器安装的技能可直接 bootstrap。
+用户提供 GitHub 链接时，按链接指定的仓库和版本下载到临时目录，找到 `skills/agent-bridge`。用户提供安装 ZIP 时，解压到临时目录，找到同名技能目录。先审阅随附的安装脚本，再运行技能目录中的 `scripts/install.py` 校验并安装。使用返回的 `skill` 路径运行后续命令。升级使用 `--upgrade`，安装器会保护用户修改。已有对应版本时可直接运行 bootstrap。
 
 ```text
 python <技能目录>/scripts/bootstrap.py
@@ -42,7 +42,7 @@ Mac 名称可用 mac-codex。bootstrap 返回实际 Python 与入口路径；后
 1. 从当前上下文确定本轮交付。准备 UTF-8 报告，写清任务编号/目标、修改、实际测试、遗留问题和下一步。未执行的测试明确写未执行。
 2. 只选择本轮明确授权的普通文件；不扫描并发送整个工程，排除 .env、私钥、账号凭据、数据库和虚拟环境。目录需先按用户授权生成交付 ZIP，工具不会自动打包目录。
 3. 调用 send，记录 delivery_id。只有 delivered_to_receiver 表示对方进程完整保存并校验，不等于对方 Codex 已读或审核通过。
-4. 失败先查 outbox，已有记录用原 ID retry。源文件变动则新建交付；不要不断换 ID 重复发送同一失败交付。
+4. 失败时先看 `error.code` 和 `action`。连接中断或超时先用 outbox 找到原 ID，恢复连接后查询 delivery-status；仍未确认时用原 ID retry。源文件变动时新建交付。
 
 ```text
 python <技能目录>/scripts/bridge.py send --to windows --project SpaceWatch --title "iOS 第12轮交付" --report <报告绝对路径> --file <代码ZIP绝对路径> --file <截图绝对路径>

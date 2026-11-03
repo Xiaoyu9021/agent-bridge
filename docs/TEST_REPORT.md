@@ -2,6 +2,22 @@
 
 更新日期：2026-11-03（Asia/Shanghai）。各项证据保留实际验证日期。当前是本地开发预览，**不是跨平台验收全部通过**。
 
+## V0.1.3 候选
+
+Windows 回归 **70 passed**，有一条上游 Starlette/httpx 弃用警告。Ruff、技能清单和技能结构校验通过。结果见 [本机证据](evidence/retry.0.1.3.windows.json)。
+
+Windows 本机回环验证使用真实 TCP 和两个隔离的 Agent Bridge 端点。合成 ZIP 为 536,871,032 字节。接收端写入 268,432,898 字节后，从发送端注入一次上传连接中断。收件箱未显示草稿，临时文件清理成功。按原 ID 重试时复用了已校验的报告，ZIP 从头上传。最终收件箱中只有一份交付，ZIP 的大小和 SHA-256 与发送端一致。此项测量来自 Windows 单机环境。
+
+用以下命令复现 512 MiB 回环中断测试。常规回归使用 4 MiB 合成附件。
+
+```powershell
+$env:AGENT_BRIDGE_LARGE_RETRY = '1'
+.\.venv\Scripts\python -m pytest -q tests/test_agent_bridge.py -k interrupted_delivery
+Remove-Item Env:AGENT_BRIDGE_LARGE_RETRY
+```
+
+真实双机的首次安装与大文件断网验收步骤见 [双机验收](LAN_TRIAL_V0_1_3.md)。
+
 ## V0.1.2：主要交付改为 Agent Bridge skill
 
 运行入口为 `skills/agent-bridge`。已完成自包含技能包、独立无 Qt 环境、安装校验、后台收件、本地控制、两端配对、发送/收取/已读区分、固定 ID 重试和收件复核。

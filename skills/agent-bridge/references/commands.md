@@ -19,7 +19,7 @@
 | inbox --project SpaceWatch | 查看本端完整收到的交付和阅读时间 |
 | receive --project SpaceWatch / receive --id DELIVERY_UUID | 导出最新未收取交付或指定交付，重复收取复用且复核 |
 | read DELIVERY_UUID | 当前 Agent 实际阅读报告后确认已读 |
-| delivery-status DELIVERY_UUID | 发送端查看 received_at / read_at，不等于代码验收 |
+| delivery-status DELIVERY_UUID | 查看接收端是否已完整保存，以及 received_at / read_at |
 
 setup 支持 --listen auto（默认）、--listen 127.0.0.1（仅本机），或具体私有 IP。首选端口 47821，被占用时选择可用端口；实际地址见 status/invite。已有配置不会被重复 setup 覆盖。跨机地址变化后需重新邀请配对。
 
@@ -29,6 +29,11 @@ setup 支持 --listen auto（默认）、--listen 127.0.0.1（仅本机），或
 
 每轮收件在独立目录保存 TASK.md、manifest.json、attachments/、results/；receive 返回实际报告的 report_path，用户不需要手工找到文件再交给 Agent。
 
-命令非零或 ok:false 时报告原因。超时先 outbox，再用原 ID retry。源文件改变时应新建交付。系统凭据库锁定时请用户解锁，严禁明文回退。后台进程已停止时 start。
+命令非零或 ok:false 时，结合 `error.code` 与可选的 `action` 说明原因和下一步。在同一 profile 下操作。
+
+- `not_running` 时运行 start。首次使用可以运行 setup。凭据库不可用时，请用户启用或解锁系统凭据库。
+- `not_paired` 时先查询 peers，按配对状态处理等待批准或重新邀请。
+- 网络中断或超时时，先用 outbox 核对原交付 ID。让接收端检查 status。若接收端的局域网地址已经变更，在接收端 stop 后 start，再生成新邀请并用原别名重新配对。恢复连接后查 delivery-status。新版接收端返回的 `receiver_status: delivered_to_receiver` 表示已保存，`draft` 表示待完成。仍未确认时用原 ID retry。已校验的整份附件会复用，中断的附件从头上传。
+- 源文件改变时新建交付。若别名已指向另一台设备，旧交付只能对原设备恢复。
 
 HTTP 仅用于可信 LAN 或已有加密的私有网络。不做公网映射、自动执行代码、会话接管或账号共享。配对只授予向该接收端提交/读取相关任务的能力，不授予远程命令执行能力。

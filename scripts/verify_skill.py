@@ -1,6 +1,7 @@
 """Verify the installed skill via independent CLI processes, real HTTP, and the OS vault."""
 from __future__ import annotations
 
+import argparse
 import hashlib
 import json
 import os
@@ -12,13 +13,17 @@ import time
 import zipfile
 from pathlib import Path
 
-from codex_bridge import __version__
 from codex_bridge.agent.local import Vault
 
 
 def main():
     project = Path(__file__).resolve().parents[1]
-    skill = project / "skills" / "agent-bridge"
+    system = platform.system().lower()
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--skill", type=Path, default=project / "skills" / "agent-bridge")
+    parser.add_argument("--output", type=Path, default=project / "artifacts" / f"skill-smoke.{system}.json")
+    args = parser.parse_args()
+    skill = args.skill.resolve()
     python = skill / ".runtime" / ("Scripts/python.exe" if os.name == "nt" else "bin/python")
     entry = skill / "scripts" / "bridge.py"
     if not python.is_file():
@@ -28,6 +33,8 @@ def main():
     flags = {"creationflags": subprocess.CREATE_NO_WINDOW} if os.name == "nt" else {}
     subprocess.run([str(python), "-c", "import importlib.util; assert importlib.util.find_spec('PySide6') is None"],
                    check=True, env=environment, **flags)
+    version = subprocess.check_output([str(python), str(entry), "--version"], encoding="utf-8",
+                                      env=environment, **flags).strip()
     with tempfile.TemporaryDirectory(prefix="agent-bridge-skill-") as temp:
         base = Path(temp)
         windows, mac = base / "windows", base / "mac"
@@ -40,6 +47,8 @@ def main():
             return result
         started = []
         try:
+            stopped = command(windows, "status", allow_error=True)
+            assert stopped["error"]["code"] == "not_running" and "setup" in stopped["action"]
             for home, name in [(windows, "windows-codex"), (mac, "mac-codex")]:
                 result = command(home, "setup", "--name", name, "--listen", "127.0.0.1")
                 assert result["running"]
@@ -86,14 +95,15 @@ def main():
             assert command(windows, "status")["receiver_url"] == receiver_url
             assert command(mac, "delivery-status", delivery_id)["read_at"]
             assert Path(command(windows, "receive", "--id", delivery_id)["report_path"]).read_bytes() == report.read_bytes()
-            report_result = {"version": __version__, "platform": platform.platform(), "python": platform.python_version(),
+            report_result = {"version": version, "platform": platform.platform(), "python": platform.python_version(),
                              "isolated_skill_runtime": True, "qt_required": False, "independent_receiver_processes": 2,
                              "independent_cli_invocations": True, "system_vault": True, "files": 3,
                              "chinese_filenames": True, "sha256_verified": True, "idempotent_retry": True,
                              "received_and_read_distinguished": True, "restart_recovery": True,
-                             "transport": "127.0.0.1 on Windows; simulated Mac, not physical cross-device LAN"}
-            output = project / "artifacts" / "skill-smoke.windows.json"
-            output.write_text(json.dumps(report_result, indent=2), encoding="utf-8")
+                             "setup_hint_on_fresh_profile": True,
+                             "transport": f"127.0.0.1 on {system}; both endpoints on one host"}
+            args.output.parent.mkdir(parents=True, exist_ok=True)
+            args.output.write_text(json.dumps(report_result, indent=2) + "\n", encoding="utf-8")
             print(json.dumps(report_result, indent=2))
         finally:
             for home in reversed(started):

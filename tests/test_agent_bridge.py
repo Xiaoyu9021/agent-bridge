@@ -1,14 +1,21 @@
 import json
+import os
 import secrets
+import time
+import zipfile
 from pathlib import Path
 
 import httpx
 import pytest
 
+from codex_bridge.agent import cli
 from codex_bridge.agent.broker import JoinInput, Node, ReceiveInput, SendInput
 from codex_bridge.agent.lifecycle import control_request
 from codex_bridge.agent.local import init_profile, local_control_url, profile_home
+from codex_bridge.client.api import BridgeClient
+from codex_bridge.config import CHUNK_SIZE
 from codex_bridge.models import new_id
+from codex_bridge.services.files import file_hash
 from codex_bridge.storage.store import BridgeError
 
 
@@ -67,7 +74,6 @@ def sample_delivery(tmp_path, peer="windows"):
     report = files / "执行报告.md"
     report.write_text("# SpaceWatch iOS\n已完成页面复刻。\n测试：12 passed。\n遗留：推送权限待真机验证。", encoding="utf-8")
     archive = files / "ios-changes.zip"
-    import zipfile
     with zipfile.ZipFile(archive, "w") as handle:
         handle.writestr("README.md", "示例代码产物，不自动解压或执行")
     screenshot = files / "截图.png"
@@ -123,6 +129,89 @@ def test_agent_retry_is_idempotent_and_source_changes_rejected(nodes, tmp_path):
     with pytest.raises(BridgeError, match="源文件"):
         call(mac, "POST", "/retry/" + body.id)
     assert call(mac, "GET", "/outbox")[0]["status"] == "failed"
+
+
+def test_interrupted_delivery_retries_same_id_and_preserves_complete_attachments(nodes, tmp_path, monkeypatch, capsys):
+    windows, mac = nodes
+    connect(mac, windows, "windows")
+    report = tmp_path / "断网验证.md"
+    report.write_text("# 合成中断测试", encoding="utf-8")
+    archive = (tmp_path / "大附件.zip").resolve()
+    mib = 512 if os.environ.get("AGENT_BRIDGE_LARGE_RETRY") == "1" else 4
+    with zipfile.ZipFile(archive, "w") as zipped, zipped.open("payload.bin", "w") as target:
+        chunk = os.urandom(CHUNK_SIZE)
+        for _ in range(mib):
+            target.write(chunk)
+
+    store = windows.runtime.control.store
+    upload = BridgeClient.upload
+    uploaded = []
+    observed_partial = []
+
+    def interrupt_first_archive(client, task_id, metadata, path, progress=None):
+        uploaded.append(path.name)
+        if path != archive or observed_partial:
+            return upload(client, task_id, metadata, path, progress)
+
+        def interrupt(_, sent, __):
+            cutoff = mib // 2 * CHUNK_SIZE
+            if sent <= cutoff:
+                return
+            partial = store.path_for(metadata.id).with_suffix(".part")
+            deadline = time.monotonic() + 10
+            while time.monotonic() < deadline:
+                try:
+                    with partial.open("rb") as handle:
+                        size = handle.seek(0, os.SEEK_END)
+                except FileNotFoundError:
+                    size = 0
+                # The server's buffered file can still hold the last part of a socket read.
+                if size >= cutoff - 64 * 1024:
+                    observed_partial.append((partial, size))
+                    raise httpx.WriteError("synthetic socket interruption")
+                time.sleep(0.01)
+            raise RuntimeError("Receiver did not write the first half of the archive")
+
+        return upload(client, task_id, metadata, path, interrupt)
+
+    monkeypatch.setattr(BridgeClient, "upload", interrupt_first_archive)
+    monkeypatch.setattr(cli, "control_request",
+                        lambda root, method, path, **kwargs: control_request(root, method, path, vault=mac.vault, **kwargs))
+    delivery_id = new_id()
+    args = ["--home", str(mac.root)]
+    with pytest.raises(SystemExit) as failed:
+        cli.main([*args, "send", "--to", "windows", "--id", delivery_id, "--title", "中断验证",
+                  "--report", str(report), "--file", str(archive)])
+    error = json.loads(capsys.readouterr().out)
+    assert observed_partial, "The interruption did not reach the expected upload position"
+    assert failed.value.code == 1 and error["error"]["code"] == "offline"
+    assert error["delivery_id"] == delivery_id and "outbox" in error["action"]
+    assert windows.inbox() == []
+    assert mac.outbox()[0]["status"] == "failed"
+    partial, interrupted_bytes = observed_partial[0]
+    deadline = time.monotonic() + 10
+    while partial.exists() and time.monotonic() < deadline:
+        time.sleep(0.01)
+    assert not partial.exists()
+    assert call(mac, "GET", "/delivery/" + delivery_id)["receiver_status"] == "draft"
+
+    cli.main([*args, "retry", delivery_id])
+    delivered = json.loads(capsys.readouterr().out)
+    assert delivered["status"] == "delivered_to_receiver"
+    assert delivered["delivery_id"] == delivery_id
+    assert call(mac, "GET", "/delivery/" + delivery_id)["receiver_status"] == "delivered_to_receiver"
+    assert uploaded == [report.name, archive.name, archive.name]
+    assert [item["delivery_id"] for item in windows.inbox()] == [delivery_id]
+    received = windows.receive(ReceiveInput(id=delivery_id))
+    assert Path(received["report_path"]).read_text(encoding="utf-8") == "# 合成中断测试"
+    received_zip = next(Path(item["path"]) for item in received["files"] if Path(item["path"]).name == archive.name)
+    size, sha256 = file_hash(archive)
+    assert file_hash(received_zip) == (size, sha256)
+    if mib == 512:
+        with capsys.disabled():
+            print(json.dumps({"archive_bytes": size, "interrupted_after_bytes": interrupted_bytes,
+                              "sha256": sha256, "inbox_count": 1, "same_id": True,
+                              "completed_report_reused": True, "partial_cleaned": True}))
 
 
 def test_local_admin_not_exposed_on_lan_and_receipts_are_private(nodes, tmp_path):
