@@ -8,7 +8,7 @@
 
 **当前交付：`skills/agent-bridge/`。** 无需桌面程序或 Qt，不使用任何模型 API Key，不读取或共享 Codex 登录材料。公开仓库为 [Xiaoyu9021/agent-bridge](https://github.com/Xiaoyu9021/agent-bridge)，预览版与安装包见 [Releases](https://github.com/Xiaoyu9021/agent-bridge/releases)。
 
-Windows 当前 **69 项测试通过**，并通过无 Qt 独立环境、两个后台进程和系统凭据库的端到端测试。Mac skill 已安装运行；真实 Windows ↔ Mac 局域网双向三附件交付、报告阅读和已读回执已完成，使用合成联调资料。
+v0.1.3 候选在 Windows 上通过 **70 项回归测试**，完成了从 GitHub 下载后的隔离安装和 512 MiB 回环中断恢复。v0.1.2 已用合成资料完成真实 Windows ↔ Mac 局域网双向交付、报告阅读和已读回执。候选版的实机流程见 [双机验收](docs/LAN_TRIAL_V0_1_3.md)。
 
 2026-11-03，用户确认已在实际 SpaceWatch 开发对话中完成一轮真实交付试运行。这是用户确认的使用结果；公开仓库只保留脱敏说明，不上传真实工程、执行包或报告正文。可复现的合成演示见 [演示流程](docs/DEMO.md)。
 

@@ -6,6 +6,10 @@
 
 Windows 回归 **70 passed**，有一条上游 Starlette/httpx 弃用警告。Ruff、技能清单和技能结构校验通过。结果见 [本机证据](evidence/retry.0.1.3.windows.json)。
 
+Windows 从 GitHub 候选分支重新克隆到独立目录，通过清单安装并创建无 Qt 的 Python 环境。使用全新的隔离数据目录、两个后台进程和系统凭据库，完成首次启动、配对、交付、收取与已读确认。两端均在同一台 Windows 主机上。结果见 [全新安装证据](evidence/fresh-install.0.1.3.windows.json)。
+
+候选代码提交 `9eb94f4c7e9fd4fac49acaae1fb9344507c14c84` 的 Windows、macOS、Linux × Python 3.11、3.13 六组线上检查与打包均通过。见 [候选版 CI](https://github.com/Xiaoyu9021/agent-bridge/actions/runs/41598034817)。
+
 Windows 本机回环验证使用真实 TCP 和两个隔离的 Agent Bridge 端点。合成 ZIP 为 536,871,032 字节。接收端写入 268,432,898 字节后，从发送端注入一次上传连接中断。收件箱未显示草稿，临时文件清理成功。按原 ID 重试时复用了已校验的报告，ZIP 从头上传。最终收件箱中只有一份交付，ZIP 的大小和 SHA-256 与发送端一致。此项测量来自 Windows 单机环境。
 
 用以下命令复现 512 MiB 回环中断测试。常规回归使用 4 MiB 合成附件。
